@@ -59,7 +59,6 @@ def upload_file():
         save_metadata(metadata)
 
         return jsonify({"message": "File uploaded successfully", "filename": file.filename}), 200
-
     return render_template("upload.html")
 
 # Route for secure file download
