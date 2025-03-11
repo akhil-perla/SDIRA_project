@@ -3,7 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>File Upload & Download</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .file-list {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        async function fetchFiles() {
+            const response = await fetch('/files');
+            const files = await response.json();
+
+            let fileList = document.getElementById('fileList');
+            fileList.innerHTML = ''; // Clear previous list
+
+            if (files.length === 0) {
+                fileList.innerHTML = "<p>No files available for download.</p>";
+                return;
+            }
+
+            files.forEach(file => {
+                let listItem = document.createElement('li');
+                let downloadLink = document.createElement('a');
+                
+                downloadLink.href = `/download/${file.filename}`;
+                downloadLink.textContent = file.filename;
+                downloadLink.download = file.filename;
+
+                listItem.appendChild(downloadLink);
+                fileList.appendChild(listItem);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchFiles);
+    </script>
 </head>
 <body>
     <h2>Upload a File</h2>
@@ -11,5 +51,9 @@
         <input type="file" name="file" required>
         <button type="submit">Upload</button>
     </form>
+
+    <h2>Available Files for Download</h2>
+    <ul id="fileList"></ul>
 </body>
 </html>
+
