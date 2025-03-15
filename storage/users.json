@@ -1,0 +1,11 @@
+{
+    "admin": {
+        "password": "pbkdf2:sha256:150000$yHqxZbT5$94a1b4c59b6b3eeb62dfc0a81896a3f3b2b8e1f2f1bb4c1b6c197f6b7a2cba5d"
+    },
+    "testuser": {
+        "password": "scrypt:32768:8:1$52Bo4roJ7c2MmSaP$dce96ad11028047265904bdac3987ecf51cd75c9a6bb9f16839e3ff84971dceabfcc9279b5dc005041dcefc9ab0704bb521187b51be1da2bb1c087bc76f5257c"
+    },
+    "testuser1": {
+        "password": "scrypt:32768:8:1$TA9cOgFtmAYSWzTF$0b382ffb245b0bda72479379917a7ed740dad34b87cdfeb1f9600ccead50f01ef4af9e83affb1b5074df0cfd805eb5bd29fd62473918445e77469fc89fbf9c49"
+    }
+}
