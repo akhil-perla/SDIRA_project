@@ -1,7 +1,8 @@
 from flask import Flask, render_template
 from routes.file_upload import file_upload
-from routes.auth import auth
+from routes.auth import *
 from routes.dashboard import dashboard_bp  # Import dashboard blueprint
+
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -14,7 +15,7 @@ app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
 @app.route("/")
 def index():
-    return render_template("upload.html")
+    return redirect(url_for("auth.login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
