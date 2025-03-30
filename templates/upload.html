@@ -1,59 +1,67 @@
+<!-- Updated upload.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload & Download</title>
+    <title>File Upload</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        .file-list {
-            margin-top: 20px;
-        }
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .error { color: red; }
     </style>
     <script>
-        async function fetchFiles() {
-            const response = await fetch('/files');
-            const files = await response.json();
-
-            let fileList = document.getElementById('fileList');
-            fileList.innerHTML = ''; // Clear previous list
-
-            if (files.length === 0) {
-                fileList.innerHTML = "<p>No files available for download.</p>";
+        const validCustodians = ["alice", "bob", "charlie"]; // Example valid custodians
+        
+        function uploadFile(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById("file");
+            const custodianInput = document.getElementById("custodians");
+            const errorDiv = document.getElementById("error");
+            
+            errorDiv.textContent = ""; // Clear previous errors
+            if (!fileInput.files.length) {
+                errorDiv.textContent = "Please select a file.";
                 return;
             }
-
-            files.forEach(file => {
-                let listItem = document.createElement('li');
-                let downloadLink = document.createElement('a');
-                
-                downloadLink.href = `/download/${file.filename}`;
-                downloadLink.textContent = file.filename;
-                downloadLink.download = file.filename;
-
-                listItem.appendChild(downloadLink);
-                fileList.appendChild(listItem);
-            });
+            
+            const file = fileInput.files[0];
+            const filename = file.name;
+            const fileExtension = filename.split('.').pop().toLowerCase();
+            if (!["csv", "xlsx"].includes(fileExtension)) {
+                errorDiv.textContent = "Invalid file format. Only .csv and .xlsx allowed.";
+                return;
+            }
+            
+            let custodians = custodianInput.value.split(",").map(c => c.trim().toLowerCase());
+            if (!custodians.every(c => validCustodians.includes(c))) {
+                errorDiv.textContent = "Invalid custodian(s) entered.";
+                return;
+            }
+            
+            let files = JSON.parse(localStorage.getItem("files")) || [];
+            if (files.some(f => f.filename === filename)) {
+                errorDiv.textContent = "File with this name already exists.";
+                return;
+            }
+            
+            const issuer = "current_user"; // Simulated issuer name
+            files.push({ filename, issuer, custodians });
+            localStorage.setItem("files", JSON.stringify(files));
+            alert("File uploaded successfully!");
+            window.location.href = "dashboard.html";
         }
-
-        document.addEventListener("DOMContentLoaded", fetchFiles);
     </script>
 </head>
 <body>
     <h2>Upload a File</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+    <form onsubmit="uploadFile(event)">
+        <input type="file" id="file" required><br><br>
+        <label>Enter Custodians (comma-separated):</label>
+        <input type="text" id="custodians" required><br><br>
         <button type="submit">Upload</button>
+        <p id="error" class="error"></p>
     </form>
-
-    <h2>Available Files for Download</h2>
-    <ul id="fileList"></ul>
 </body>
 </html>
 

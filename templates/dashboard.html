@@ -15,15 +15,50 @@
     </nav>
 
     <div class="container mt-5">
-        <h2>Welcome, {{ session['user'] }}!</h2>
+        <h2>Welcome, {{ user }}!</h2>
         <p>This is your dashboard. You can manage your files and account here.</p>
 
+        <!-- File Upload Form -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Upload a New File</h5>
+                <form action="{{ url_for('file_upload.upload_file') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Choose a file</label>
+                        <input type="file" class="form-control" id="file" name="file" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="custodians" class="form-label">Enter Custodians (comma-separated)</label>
+                        <input type="text" class="form-control" id="custodians" name="custodians" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- File List Section -->
         <div class="card mt-4">
             <div class="card-body">
                 <h5 class="card-title">Your Files</h5>
-                <p class="card-text">List of uploaded files will be displayed here.</p>
+                {% if files %}
+                    <ul class="list-group">
+                        {% for file in files %}
+                            <li class="list-group-item">
+                                <strong>{{ file['filename'] }}</strong><br>
+                                <small>Custodians: 
+                                    {% for custodian in file['custodians'] %}
+                                        {{ custodian }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </small>
+                            </li> it 
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No files uploaded yet.</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </body>
 </html>
+

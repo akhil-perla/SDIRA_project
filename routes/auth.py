@@ -27,7 +27,7 @@ def login():
         if username in users and check_password_hash(users[username]["password"], password):
             session['user'] = username
             flash("Login successful!", "success")
-            return redirect(url_for("dashboard"))  # Adjust as needed
+            return redirect(url_for("dashboard.dashboard"))  # Adjust as needed
         else:
             flash("Invalid credentials", "danger")
 
@@ -65,3 +65,9 @@ def register():
             return redirect(url_for('auth.login'))
 
     return render_template('register.html')
+
+@auth.route('/logout')
+def logout():
+    session.pop('user', None)  # Remove user from session
+    flash("You have been logged out.", "info")
+    return redirect(url_for('auth.login'))
