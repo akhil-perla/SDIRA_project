@@ -9,6 +9,7 @@ from flask import send_from_directory, abort
 file_upload = Blueprint("file_upload", __name__)
 
 UPLOAD_FOLDER = "uploads"
+FILES_FILE = "files.json"
 METADATA_FILE = "storage/files.json"
 ALLOWED_EXTENSIONS = {"csv", "xlsx", "xls"}
 
@@ -80,6 +81,49 @@ def upload_file():
 
     return jsonify({"error": "Invalid file type"}), 400
 
+    users = load_users()
+    files = load_files()
+
+    issuer = input("Enter your username (issuer): ").strip()
+    if issuer not in users or users[issuer]["role"] != "issuer":
+        print("Error: You must be an issuer to upload files.")
+        return
+
+    filename = input("Enter filename (must end in .csv or .xlsx): ").strip()
+    if not is_valid_extension(filename):
+        print("Error: Invalid file format! Allowed: .csv, .xlsx")
+        return
+
+    if filename in files:
+        print("Error: A file with this name already exists. Please rename your file.")
+        return
+
+    custodian_input = input("Enter custodians who should access this file (comma-separated): ").strip()
+    custodians = [c.strip() for c in custodian_input.split(",") if c.strip()]
+
+    # Verify that the specified custodians exist and are valid
+    valid_custodians = [c for c in custodians if c in users and users[c]["role"] == "custodian"]
+    if not valid_custodians:
+        print("Error: No valid custodians found. Make sure the usernames are correct.")
+        return
+
+    # Save file metadata
+    files[filename] = {
+        "issuer": issuer,
+        "custodians": valid_custodians
+    }
+    save_files(files)
+
+    # Simulate saving the file
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    with open(os.path.join(UPLOAD_FOLDER, filename), "w") as f:
+        f.write("")  # Placeholder for actual file content
+
+    print(f"File '{filename}' uploaded successfully and assigned to custodians: {valid_custodians}")
+
+if __name__ == "__main__":
+    upload_file()
+
 @file_upload.route("/download/<filename>", methods=["GET"])
 def download_file(filename):
     """Allow secure downloading of uploaded files."""
@@ -100,6 +144,5 @@ def download_file(filename):
     except Exception as e:
         print(f"Download error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
-
 
 

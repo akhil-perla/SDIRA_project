@@ -51,23 +51,33 @@ def logout():
 
 # REGISTER ROUTE
 @auth.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username'].strip()
-        password = request.form['password'].strip()
-        confirm_password = request.form['confirm_password'].strip()
-        users = load_users()
+def register_user():
+    users = load_users()
 
-        if username in users:
-            flash('Username already exists. Choose a different one.', 'danger')
-        elif password != confirm_password:
-            flash('Passwords do not match.', 'danger')
-        elif len(password) < 6:
-            flash('Password must be at least 6 characters long.', 'danger')
-        else:
-            users[username] = {'password': generate_password_hash(password)}
-            save_users(users)
-            flash('Registration successful! You can now log in.', 'success')
-            return redirect(url_for('auth.login'))
+    username = input("Enter username: ").strip()
+    if username in users:
+        print("Error: Username already exists!")
+        return
+    
+    password = getpass.getpass("Enter password: ").strip()  # Secure input
+    role = input("Enter role (admin, custodian, issuer, user): ").strip().lower()
+    
+    if role not in ["admin", "custodian", "issuer", "user"]:
+        print("Error: Invalid role. Must be admin, custodian, issuer, or user.")
+        return
+    
+    manages = []
+    if role in ["custodian", "issuer"]:
+        manages = input(f"Enter associated {'issuers' if role == 'custodian' else 'custodians'} (comma-separated): ").strip().split(",")
 
-    return render_template('register.html')
+    users[username] = {
+        "password": password,  # Keeping existing encryption format
+        "role": role,
+        "manages": [m.strip() for m in manages if m.strip()]
+    }
+
+    save_users(users)
+    print(f"User '{username}' registered successfully!")
+
+if __name__ == "__main__":
+    register_user()
