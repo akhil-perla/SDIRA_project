@@ -16,5 +16,11 @@
         "size": 846,
         "upload_time": "2025-03-11T17:44:21.698717",
         "mime_type": "text/csv"
+    },
+    {
+        "filename": "test.xlsx",
+        "size": 4700,
+        "upload_time": "2025-03-19T19:50:47.933608",
+        "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     }
 ]
