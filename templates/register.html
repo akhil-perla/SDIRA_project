@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        function toggleIssuerField() {
+            let role = document.getElementById("role").value;
+            let issuerField = document.getElementById("issuerField");
+            if (role === "custodian") {
+                issuerField.style.display = "block";
+            } else {
+                issuerField.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-5">
@@ -28,6 +39,18 @@
             <div class="mb-3">
                 <label for="confirm_password" class="form-label">Confirm Password</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-control" id="role" name="role" required onchange="toggleIssuerField()">
+                    <option value="admin">Admin</option>
+                    <option value="custodian">Custodian</option>
+                    <option value="issuer">Issuer</option>
+                </select>
+            </div>
+            <div class="mb-3" id="issuerField" style="display: none;">
+                <label for="manages" class="form-label">Issuers Managed (comma-separated)</label>
+                <input type="text" class="form-control" id="manages" name="manages" placeholder="issuer1, issuer2">
             </div>
             <button type="submit" class="btn btn-success w-100">Register</button>
         </form>
