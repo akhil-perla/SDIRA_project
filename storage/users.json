@@ -18,5 +18,34 @@
     "tester": {
         "password": "scrypt:32768:8:1$M37uX3gALmsX48nc$51003d944af0471d93a92b14b9ff259d42d318752758df510446da42a94b20c925c5bbf83ee1d43910ccd1fa23e9e56e94e7860bbbf2e128ab2aeb581b682f26",
         "role": "issuer"
+    },
+    "iss1": {
+        "password": "scrypt:32768:8:1$MlSJ7APM5OSLQukA$f69f859ebce3d22286f8d0c87102f36cdd961245455c6f549e0cba306f97cd1259d31258c7d3dea64cc7d6cea6ff4b7657eaf28c8fdf6d86f418a390c4e2a2d0",
+        "role": "issuer"
+    },
+    "testIssuer": {
+        "password": "scrypt:32768:8:1$WT6xQy7O8FPcg952$f6c115c52e38513297c45bc82000588163180c717eaec43a4eda41c7b8759224c93ecce0f34b14d0ffb1393d59dcee0b187f0faaacbe9bdc962f2823f9e5c6bc",
+        "role": "issuer",
+        "custodians": [],
+        "manages": [
+            "custodian_user",
+            "cust1"
+        ]
+    },
+    "cust1": {
+        "password": "scrypt:32768:8:1$7hSxOa7kwCDGg1Uc$0b209ee2b496d1d03efc6b2a9dfd19a8d27fb1bd80e6e110177fabad6c26b41480e6ba03f1366a2969af7dd1e04744bad9fa41239a8dcb6dc54175770e235dfe",
+        "role": "custodian",
+        "manages": [
+            "testIssuer",
+            "issuer_user",
+            "testIssuer2"
+        ]
+    },
+    "testIssuer2": {
+        "password": "scrypt:32768:8:1$nlFxmuCFSrgLlVvj$93d631d0fb84ae0d218ce323498fd95add94108daa5e3cbe96044bf47245fe8a00cada5273b5692a63936bea3373a34e68e5f2a3dc6b280844b958ca8daa903c",
+        "role": "issuer",
+        "manages": [
+            "cust1"
+        ]
     }
 }

@@ -20,14 +20,21 @@ auth_blueprint = Blueprint('auth', __name__)
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form['username'].strip()
+        password = request.form['password'].strip()
         users = load_users()
 
         if username in users and check_password_hash(users[username]["password"], password):
+            user_data = users[username]
             session['user'] = username
+            session['role'] = user_data.get("role")  # Store role in session
             flash("Login successful!", "success")
-            return redirect(url_for("dashboard.dashboard"))  # Adjust as needed
+
+            # Redirect based on role
+            if user_data.get("role") == "custodian":
+                return redirect(url_for("custodian.custodian_dashboard"))
+            else:  # issuer or default
+                return redirect(url_for("dashboard.dashboard"))
         else:
             flash("Invalid credentials", "danger")
 
