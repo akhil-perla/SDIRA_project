@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custodian Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Custodian Dashboard</span>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="mb-4">Welcome, {{ custodian }} 👋</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Files You Have Access To</h5>
+            {% if files %}
+                <ul class="list-group">
+                    {% for file in files %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ file.filename }}</strong><br>
+                                <small>Uploaded by {{ file.issuer }} on {{ file.upload_time }}</small>
+                            </div>
+                            <a href="{{ url_for('file_upload.download_file', filename=file.filename) }}" class="btn btn-success btn-sm">Download</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="mt-2">No files assigned to you yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Associated Issuers Section -->
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Associated Issuers</h5>
+        {% if issuers %}
+            <ul class="list-group">
+                {% for issuer in issuers %}
+                    <li class="list-group-item">{{ issuer }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No issuers associated yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Issuer Form -->
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Add a New Issuer</h5>
+        <form method="POST" action="{{ url_for('custodian.add_issuer') }}">
+            <div class="mb-3">
+                <label for="issuer" class="form-label">Issuer Username</label>
+                <input type="text" name="issuer" id="issuer" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Issuer</button>
+        </form>
+    </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

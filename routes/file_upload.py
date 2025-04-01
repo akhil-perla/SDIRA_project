@@ -9,6 +9,7 @@ from flask import send_from_directory, abort
 file_upload = Blueprint("file_upload", __name__)
 
 UPLOAD_FOLDER = "uploads"
+FILES_FILE = "files.json"
 METADATA_FILE = "storage/files.json"
 ALLOWED_EXTENSIONS = {"csv", "xlsx", "xls"}
 
@@ -47,6 +48,26 @@ def save_metadata(metadata):
     except IOError as e:
         print(f"Error saving metadata: {e}")
 
+# Function to check if a file with the same name already exists
+def file_exists(filename):
+    """Check if the file already exists in the upload folder."""
+    return os.path.exists(os.path.join(UPLOAD_FOLDER, filename))
+
+# Function to validate if a custodian exists (this will be based on a mock user validation)
+def is_valid_custodian(username):
+    """Check if the given username is a valid custodian."""
+    # Here you would normally query a database or another file (e.g., users.json)
+    # For simplicity, let's assume all custodians are valid if they are non-empty strings.
+    users = load_users()  # Assuming we have a function to load users from a file or DB
+    return username in users and users[username]["role"] == "custodian"
+
+def load_users():
+    """Load users from a mock user database (users.json)."""
+    USER_FILE = "storage/users.json"
+    if not os.path.exists(USER_FILE):
+        return {}
+    with open(USER_FILE, "r") as f:
+        return json.load(f)
 
 @file_upload.route("/upload", methods=["POST"])
 def upload_file():
@@ -60,9 +81,22 @@ def upload_file():
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
+        
+        # Check if the file already exists
+        if file_exists(filename):
+            return jsonify({"error": "File with the same name already exists"}), 400
+        
         filepath = os.path.join(UPLOAD_FOLDER, filename)
-
         file.save(filepath)  # Save file to uploads folder
+
+        # Prompt the issuer for custodian usernames
+        custodians_input = request.form.get('custodians')
+        custodians = custodians_input.split(',')
+
+        # Validate custodians
+        invalid_custodians = [custodian for custodian in custodians if not is_valid_custodian(custodian)]
+        if invalid_custodians:
+            return jsonify({"error": f"Invalid custodians: {', '.join(invalid_custodians)}"}), 400
 
         # Store metadata
         metadata = load_metadata()
@@ -70,7 +104,9 @@ def upload_file():
             "filename": filename,
             "size": os.path.getsize(filepath),
             "upload_time": datetime.utcnow().isoformat(),
-            "mime_type": get_mime_type(filename)
+            "mime_type": get_mime_type(filename),
+            "issuer": request.form.get('issuer'),  # Assuming issuer is passed in the form
+            "custodians": custodians
         }
 
         metadata.append(file_metadata)  # Append new file entry
@@ -79,6 +115,49 @@ def upload_file():
         return jsonify({"message": "File uploaded successfully", "filename": filename}), 201
 
     return jsonify({"error": "Invalid file type"}), 400
+
+    users = load_users()
+    files = load_files()
+
+    issuer = input("Enter your username (issuer): ").strip()
+    if issuer not in users or users[issuer]["role"] != "issuer":
+        print("Error: You must be an issuer to upload files.")
+        return
+
+    filename = input("Enter filename (must end in .csv or .xlsx): ").strip()
+    if not is_valid_extension(filename):
+        print("Error: Invalid file format! Allowed: .csv, .xlsx")
+        return
+
+    if filename in files:
+        print("Error: A file with this name already exists. Please rename your file.")
+        return
+
+    custodian_input = input("Enter custodians who should access this file (comma-separated): ").strip()
+    custodians = [c.strip() for c in custodian_input.split(",") if c.strip()]
+
+    # Verify that the specified custodians exist and are valid
+    valid_custodians = [c for c in custodians if c in users and users[c]["role"] == "custodian"]
+    if not valid_custodians:
+        print("Error: No valid custodians found. Make sure the usernames are correct.")
+        return
+
+    # Save file metadata
+    files[filename] = {
+        "issuer": issuer,
+        "custodians": valid_custodians
+    }
+    save_files(files)
+
+    # Simulate saving the file
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    with open(os.path.join(UPLOAD_FOLDER, filename), "w") as f:
+        f.write("")  # Placeholder for actual file content
+
+    print(f"File '{filename}' uploaded successfully and assigned to custodians: {valid_custodians}")
+
+if __name__ == "__main__":
+    upload_file()
 
 @file_upload.route("/download/<filename>", methods=["GET"])
 def download_file(filename):
@@ -101,5 +180,31 @@ def download_file(filename):
         print(f"Download error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+@file_upload.route("/issuer/files", methods=["GET"])
+def get_files_for_issuer():
+    """Return a list of files uploaded by the issuer along with custodians."""
+    issuer = request.args.get("issuer")  # Assuming the issuer is provided in query parameters
+    metadata = load_metadata()
+    
+    # Filter files by issuer
+    user_files = [file for file in metadata if file["issuer"] == issuer]
+    
+    return jsonify({"files": user_files}), 200
 
+# custodian download functionality 
+custodian_bp = Blueprint('custodian', __name__)
 
+@custodian_bp.route('/dashboard', methods=['GET'])
+def custodian_dashboard():
+    if 'user_id' not in session or session.get('role') != 'custodian':
+        return "Unauthorized", 403  # Restrict access to custodians
+
+    custodian_id = session['user_id']
+
+    # Fetch issuers associated with the custodian
+    issuers = db.session.query(User).join(CustodianIssuers).filter(CustodianIssuers.custodian_id == custodian_id).all()
+
+    # Fetch files from these issuers
+    files = db.session.query(File).filter(File.custodian_id == custodian_id).all()
+
+    return render_template('custodian_dashboard.html', issuers=issuers, files=files)
