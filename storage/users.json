@@ -1,40 +1,22 @@
 {
-    "user1": {
-        "role": "issuer"
-    },
-    "user2": {
-        "role": "issuer"
-    },
-    "user3": {
-        "role": "issuer"
-    },
-    "user4": {
-        "role": "issuer"
-    },
-    "custodianA": {
-        "role": "custodian"
-    },
-    "custodianB": {
-        "role": "custodian"
-    },
-    "custodianC": {
-        "role": "custodian"
-    },
-    "custodianD": {
-        "role": "custodian"
-    },
-    "custodianE": {
-        "role": "custodian"
-    },
-    "custodianF": {
-        "role": "custodian"
-    },
-    "test": {
-        "password": "scrypt:32768:8:1$45YH5EcwGpf3UboH$51ccafab38fe9ff72355d3dbdce575cb6f9cbabb7ae46960996dd9639bab7ded92a0ba8e6bac7a3357f51af8229a43a5ae7b2035fe8b7458f38b368e4621d708",
+    "admin": {
+        "password": "pbkdf2:sha256:150000$yHqxZbT5$94a1b4c59b6b3eeb62dfc0a81896a3f3b2b8e1f2f1bb4c1b6c197f6b7a2cba5d",
         "role": "admin"
     },
-    "ria": {
-        "password": "scrypt:32768:8:1$bFAB6Iu1T45mc8oT$1341c85c8c34315ef07eacc4f5135647f63d8d0c173ebfa8070eb260d364e6220932ce587d0a69a28093b0a0f55495bb6e65472b43d7e0814a48ecaa6e59666a",
-        "role": "admin"
+    "custodian_user": {
+        "password": "scrypt:32768:8:1$52Bo4roJ7c2MmSaP$dce96ad11028047265904bdac3987ecf51cd75c9a6bb9f16839e3ff84971dceabfcc9279b5dc005041dcefc9ab0704bb521187b51be1da2bb1c087bc76f5257c",
+        "role": "custodian",
+        "manages": [
+            "issuer1",
+            "issuer2"
+        ]
+    },
+    "issuer_user": {
+        "password": "scrypt:32768:8:1$lzQex3DbwMiTQn9F$7beea337d637e285936066b63bbb6c3163494d75938239c9e4b0d8978c1a4a088a59def16a5dea23674e46dd3aa23b3fbf37a6922d5a2738a5d7ebf27d73cd6e",
+        "role": "issuer"
+    },
+    "tester": {
+        "password": "scrypt:32768:8:1$M37uX3gALmsX48nc$51003d944af0471d93a92b14b9ff259d42d318752758df510446da42a94b20c925c5bbf83ee1d43910ccd1fa23e9e56e94e7860bbbf2e128ab2aeb581b682f26",
+        "role": "issuer"
     }
 }

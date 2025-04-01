@@ -15,9 +15,9 @@ def save_users(users):
     with open(USER_FILE, "w") as f:
         json.dump(users, f, indent=4)
 
-auth = Blueprint('auth', __name__)
+auth_blueprint = Blueprint('auth', __name__)
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -33,7 +33,7 @@ def login():
 
     return render_template('login.html')
 
-@auth.route('/register', methods=['GET', 'POST'])
+@auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username'].strip()
@@ -66,8 +66,10 @@ def register():
 
     return render_template('register.html')
 
-@auth.route('/logout')
+
+# Define the logout route
+@auth_blueprint.route('/logout')
 def logout():
-    session.pop('user', None)  # Remove user from session
-    flash("You have been logged out.", "info")
-    return redirect(url_for('auth.login'))
+    # Remove user from session to log out
+    session.pop('user', None)
+    return redirect(url_for('auth.login'))  # Redirect to login page after logout
