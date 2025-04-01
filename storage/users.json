@@ -32,5 +32,9 @@
     "test": {
         "password": "scrypt:32768:8:1$45YH5EcwGpf3UboH$51ccafab38fe9ff72355d3dbdce575cb6f9cbabb7ae46960996dd9639bab7ded92a0ba8e6bac7a3357f51af8229a43a5ae7b2035fe8b7458f38b368e4621d708",
         "role": "admin"
+    },
+    "ria": {
+        "password": "scrypt:32768:8:1$bFAB6Iu1T45mc8oT$1341c85c8c34315ef07eacc4f5135647f63d8d0c173ebfa8070eb260d364e6220932ce587d0a69a28093b0a0f55495bb6e65472b43d7e0814a48ecaa6e59666a",
+        "role": "admin"
     }
 }

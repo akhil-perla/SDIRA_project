@@ -34,38 +34,6 @@ def login():
     return render_template('login.html')
 
 @auth.route('/register', methods=['GET', 'POST'])
-<<<<<<< HEAD
-def register_user():
-    users = load_users()
-
-    username = input("Enter username: ").strip()
-    if username in users:
-        print("Error: Username already exists!")
-        return
-    
-    password = getpass.getpass("Enter password: ").strip()  # Secure input
-    role = input("Enter role (admin, custodian, issuer, user): ").strip().lower()
-    
-    if role not in ["admin", "custodian", "issuer", "user"]:
-        print("Error: Invalid role. Must be admin, custodian, issuer, or user.")
-        return
-    
-    manages = []
-    if role in ["custodian", "issuer"]:
-        manages = input(f"Enter associated {'issuers' if role == 'custodian' else 'custodians'} (comma-separated): ").strip().split(",")
-
-    users[username] = {
-        "password": password,  # Keeping existing encryption format
-        "role": role,
-        "manages": [m.strip() for m in manages if m.strip()]
-    }
-
-    save_users(users)
-    print(f"User '{username}' registered successfully!")
-
-if __name__ == "__main__":
-    register_user()
-=======
 def register():
     if request.method == 'POST':
         username = request.form['username'].strip()
@@ -103,4 +71,3 @@ def logout():
     session.pop('user', None)  # Remove user from session
     flash("You have been logged out.", "info")
     return redirect(url_for('auth.login'))
->>>>>>> 36f895e59a23de5491096168a03065df90010cee

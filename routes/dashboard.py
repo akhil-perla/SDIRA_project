@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
 import requests  # To make HTTP requests to the /issuer/files endpoint
+from routes.file_upload import custodian_bp
+
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -41,3 +43,38 @@ def dashboard():
     user_files = [file for file in files_data if file.get('issuer') == user]
 
     return render_template('dashboard.html', user=user, files=user_files)
+
+@custodian_bp.route('/download/<int:file_id>', methods=['GET'])
+def download_file(file_id):
+    if 'user_id' not in session or session.get('role') != 'custodian':
+        return "Unauthorized", 403  
+
+    custodian_id = session['user_id']
+
+    # Fetch file and ensure it belongs to the logged-in custodian
+    file = File.query.filter_by(id=file_id, custodian_id=custodian_id).first()
+    
+    if not file:
+        return "File not found or unauthorized access", 404
+
+    return send_file(file.filepath, as_attachment=True)
+
+@custodian_bp.route('/add_issuer', methods=['POST'])
+def add_issuer():
+    if 'user_id' not in session or session.get('role') != 'custodian':
+        return "Unauthorized", 403  
+
+    custodian_id = session['user_id']
+    issuer_id = request.form.get('issuer_id')
+
+    # Check if the issuer exists
+    issuer = User.query.filter_by(id=issuer_id, role='issuer').first()
+    if not issuer:
+        return "Invalid issuer", 400
+
+    # Add the association
+    new_link = CustodianIssuers(custodian_id=custodian_id, issuer_id=issuer.id)
+    db.session.add(new_link)
+    db.session.commit()
+
+    return redirect(url_for('custodian.custodian_dashboard'))

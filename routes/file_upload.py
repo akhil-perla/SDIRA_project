@@ -180,9 +180,6 @@ def download_file(filename):
         print(f"Download error: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
-<<<<<<< HEAD
-
-=======
 @file_upload.route("/issuer/files", methods=["GET"])
 def get_files_for_issuer():
     """Return a list of files uploaded by the issuer along with custodians."""
@@ -193,4 +190,21 @@ def get_files_for_issuer():
     user_files = [file for file in metadata if file["issuer"] == issuer]
     
     return jsonify({"files": user_files}), 200
->>>>>>> 36f895e59a23de5491096168a03065df90010cee
+
+# custodian download functionality 
+custodian_bp = Blueprint('custodian', __name__)
+
+@custodian_bp.route('/dashboard', methods=['GET'])
+def custodian_dashboard():
+    if 'user_id' not in session or session.get('role') != 'custodian':
+        return "Unauthorized", 403  # Restrict access to custodians
+
+    custodian_id = session['user_id']
+
+    # Fetch issuers associated with the custodian
+    issuers = db.session.query(User).join(CustodianIssuers).filter(CustodianIssuers.custodian_id == custodian_id).all()
+
+    # Fetch files from these issuers
+    files = db.session.query(File).filter(File.custodian_id == custodian_id).all()
+
+    return render_template('custodian_dashboard.html', issuers=issuers, files=files)

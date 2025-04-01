@@ -58,6 +58,47 @@
                 {% endif %}
             </div>
         </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Associated Issuers</h5>
+                {% if issuers %}
+                    <ul class="list-group">
+                        {% for issuer in issuers %}
+                            <li class="list-group-item">
+                                <strong>{{ issuer.username }}</strong>
+                                <!-- Option to add more issuers or manage -->
+                                <a href="{{ url_for('custodian.add_issuer') }}" class="btn btn-primary btn-sm float-end">Add Issuer</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No associated issuers yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- File List Section -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Your Files</h5>
+                {% if files %}
+                    <ul class="list-group">
+                        {% for file in files %}
+                            <li class="list-group-item">
+                                <strong>{{ file.filename }}</strong><br>
+                                <small>Uploaded by: {{ file.issuer.username }}</small><br>
+                                <small>Uploaded on: {{ file.upload_date }}</small><br>
+                                <a href="{{ url_for('custodian.download_file', file_id=file.id) }}" class="btn btn-success btn-sm mt-2">Download</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No files uploaded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
     </div>
 </body>
 </html>
