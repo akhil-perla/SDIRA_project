@@ -77,6 +77,35 @@
         </form>
     </div>
 </div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Issuer Data Management</h5>
+    </div>
+    <div class="card-body">
+        <p>Upload issuer information and contacts:</p>
+        <a href="{{ url_for('upload_issuers') }}" class="btn btn-primary">Upload Issuer Data</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Data Management</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6>Securities Information</h6>
+                        <p>Upload securities related to issuers:</p>
+                        <a href="{{ url_for('upload_securities') }}" class="btn btn-primary">Upload Securities Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

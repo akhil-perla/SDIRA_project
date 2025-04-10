@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Upload Securities Information</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>File Format Requirements</h5>
+        </div>
+        <div class="card-body">
+            <p>Please ensure your CSV or Excel file follows this format:</p>
+            <ul>
+                <li><strong>security_id</strong> - String (max 13 characters) (required)</li>
+                <li><strong>ISIN</strong> - Must start with 2-letter country code followed by 10 digits (required)</li>
+                <li><strong>currency</strong> - 3-character ISO code (defaults to USD if not specified)</li>
+                <li><strong>maturity_date</strong> - Date in YYYY-MM-DD format</li>
+                <li><strong>issuer</strong> - Must match an issuer name already uploaded (required)</li>
+                <li><strong>description</strong> - String (max 256 characters) (required)</li>
+            </ul>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_securities') }}">
+        <div class="form-group">
+            <label for="file">Select File</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+    </form>
+</div>
+{% endblock %} 

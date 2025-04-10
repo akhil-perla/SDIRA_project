@@ -1,0 +1,29 @@
+<div class="container mt-4">
+    <h2>Upload Issuer Information</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>File Format Requirements</h5>
+        </div>
+        <div class="card-body">
+            <p>Please ensure your CSV or Excel file follows this format:</p>
+            <ul>
+                <li><strong>issuer_name</strong> - Company name of the issuer (required)</li>
+                <li><strong>contact_name_1</strong> - Name of first contact</li>
+                <li><strong>contact_email_1</strong> - Email of first contact</li>
+                <li><strong>contact_name_2</strong> - Name of second contact (optional)</li>
+                <li><strong>contact_email_2</strong> - Email of second contact (optional)</li>
+                <li>... and so on up to contact_name_5 and contact_email_5</li>
+            </ul>
+            <p>Example row: "Acme Corp", "John Doe", "john@acme.com", "Jane Smith", "jane@acme.com", ...</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_issuers') }}">
+        <div class="form-group">
+            <label for="file">Select File</label>
+            <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls" required>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+    </form>
+</div> 

@@ -1,0 +1,15 @@
+{
+    "Issuer Company Name": {
+        "custodian": "custodian_username",
+        "contacts": [
+            {
+                "name": "Contact Person 1",
+                "email": "contact1@example.com"
+            },
+            {
+                "name": "Contact Person 2",
+                "email": "contact2@example.com"
+            }
+        ]
+    }
+} 

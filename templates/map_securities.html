@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Map Securities File Columns</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Column Mapping</h5>
+        </div>
+        <div class="card-body">
+            <p>Please map the columns from your file to the required and optional fields:</p>
+            
+            <form method="POST" action="{{ url_for('upload_securities') }}">
+                <input type="hidden" name="map_fields" value="1">
+                
+                <h6 class="mt-3">Required Fields</h6>
+                {% for field in required_fields %}
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">{{ field }}</label>
+                    <div class="col-sm-9">
+                        <select name="{{ field }}" class="form-control" required>
+                            <option value="">-- Select Column --</option>
+                            {% for column in columns %}
+                            <option value="{{ column }}" {% if field_mapping.get(field) == column %}selected{% endif %}>{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <h6 class="mt-4">Optional Fields</h6>
+                {% for field in optional_fields %}
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">{{ field }}</label>
+                    <div class="col-sm-9">
+                        <select name="{{ field }}" class="form-control">
+                            <option value="">-- Select Column --</option>
+                            {% for column in columns %}
+                            <option value="{{ column }}" {% if field_mapping.get(field) == column %}selected{% endif %}>{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <h6 class="mt-4">Custom Fields (Optional)</h6>
+                <p class="text-muted">Map any additional columns to custom fields</p>
+                {% for i in range(1, 9) %}
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Custom Field {{ i }}</label>
+                    <div class="col-sm-9">
+                        <select name="custom_field_{{ i }}" class="form-control">
+                            <option value="">-- Select Column --</option>
+                            {% for column in columns %}
+                            <option value="{{ column }}">{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Process File</button>
+                    <a href="{{ url_for('upload_securities') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

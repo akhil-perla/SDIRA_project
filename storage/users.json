@@ -47,5 +47,40 @@
         "manages": [
             "cust1"
         ]
+    },
+    "arinkadakia": {
+        "password": "scrypt:32768:8:1$FffSzyII4DVPOZmx$d27dee8bcc8ed0d527609d6f1b63b424370dfe1734c3c80cf65ead15c19a759d01fed53cb9467c2a849cbe213a1e6bdf1f6cd75d39480c619270364dd1a565b3",
+        "role": "admin"
+    },
+    "testing1": {
+        "password": "scrypt:32768:8:1$hM4gVOXBN6Mc03LG$f8a73da41b2459b9be31e4269cb2becf4ec843d9554951f429979be44312558f27ba31a47477b93f5f4f2eacded79c63a648fab20ae36f05407cccd5153d9d15",
+        "role": "admin"
+    },
+    "testing12": {
+        "password": "scrypt:32768:8:1$9f1iBkr3ZYeWpjfo$25f079e08cce5bcf7187e13d13d448f85797f3fc8c0705ca59432e3394cddd6ae7238556f5672926ac2102a4285babcb4098c7426c2e606fdb3156e62be59d53",
+        "role": "issuer"
+    },
+    "t1234": {
+        "password": "scrypt:32768:8:1$YjumjQyjdYCTkEvJ$16bd92d875877ef887c7e56252d231e90b77e9268c3e464526b35626ee103b066bd5c4e18326316a995df5f0515001c5448cdce09f4c82e621f47918b3e7fb81",
+        "role": "custodian"
+    },
+    "arin": {
+        "password": "scrypt:32768:8:1$KxXdl4EYcY46nwcD$61bde835ea1329e4715f44eebb849605d631cdbc4640eb856fbf5ca13a5a856b100e7b2b0640c61376bb947e01897f9ff8afba8362d909b719a71541c679cc4b",
+        "role": "custodian"
+    },
+    "Arin": {
+        "password": "scrypt:32768:8:1$UnfhH49d6pjwWoEZ$2a232b3a103bb61d00b0e6652eee346eeb888b5e081179d25935455465dc7aeda248154a53e192d34810ee90f71ab7e868db0192fc7ce4f9bade9fcc008dbe5d",
+        "role": "admin"
+    },
+    "ArinK": {
+        "password": "scrypt:32768:8:1$maCG7X3IARZeZona$8c4e0be96c9aebac62490387b4925aa880081366c106d9cf3d77f262de55cf2e67a019eab03077a31962b5574c36d33a81954283fb783c2e84ea1bf803a2ce0f",
+        "role": "issuer"
+    },
+    "ArinKa": {
+        "password": "scrypt:32768:8:1$4Tmo2eBfhe6yXBRs$000c695d6178f39586a639e681bb5bc4180e998dfca1521b5914d8bf85dfb98db1dcc1395da850ea45ae60de01d527aa15adb0cf87f19dfaac6870754fd0f512",
+        "role": "custodian",
+        "manages": [
+            "ArinK"
+        ]
     }
 }
