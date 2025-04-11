@@ -1,0 +1,11 @@
+{
+    "SEC001": {
+        "security_id": "SEC001",
+        "ISIN": "US1234567890",
+        "currency": "USD",
+        "issuer": "Issuer Company Name",
+        "description": "Corporate Bond Series A",
+        "custom_fields": {},
+        "maturity_date": "2025-12-31"
+    }
+}
