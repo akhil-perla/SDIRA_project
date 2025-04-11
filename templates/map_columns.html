@@ -11,7 +11,7 @@
         <div class="card-body">
             <p>Please map the columns from your file to the required and optional fields:</p>
             
-            <form method="POST" action="{{ url_for('upload_issuers') }}">
+            <form method="POST" action="{{ url_for('uploads.upload_issuers') }}">
                 <input type="hidden" name="map_fields" value="1">
                 
                 <h6 class="mt-3">Required Fields</h6>
@@ -62,7 +62,7 @@
                 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary">Process File</button>
-                    <a href="{{ url_for('upload_issuers') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ url_for('uploads.upload_issuers') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

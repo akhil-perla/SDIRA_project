@@ -80,7 +80,8 @@
         "password": "scrypt:32768:8:1$4Tmo2eBfhe6yXBRs$000c695d6178f39586a639e681bb5bc4180e998dfca1521b5914d8bf85dfb98db1dcc1395da850ea45ae60de01d527aa15adb0cf87f19dfaac6870754fd0f512",
         "role": "custodian",
         "manages": [
-            "ArinK"
+            "ArinK",
+            "testing12"
         ]
     }
 }

@@ -142,5 +142,10 @@ def upload_securities():
 def test():
     return "Application is working!"
 
+@app.route('/dashboard')
+def dashboard():
+    # Your dashboard logic here
+    return render_template('dashboard.html')
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,29 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
 <div class="container mt-4">
-    <h2>Upload Issuer Information</h2>
-    
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>File Format Requirements</h5>
-        </div>
-        <div class="card-body">
-            <p>Please ensure your CSV or Excel file follows this format:</p>
-            <ul>
-                <li><strong>issuer_name</strong> - Company name of the issuer (required)</li>
-                <li><strong>contact_name_1</strong> - Name of first contact</li>
-                <li><strong>contact_email_1</strong> - Email of first contact</li>
-                <li><strong>contact_name_2</strong> - Name of second contact (optional)</li>
-                <li><strong>contact_email_2</strong> - Email of second contact (optional)</li>
-                <li>... and so on up to contact_name_5 and contact_email_5</li>
-            </ul>
-            <p>Example row: "Acme Corp", "John Doe", "john@acme.com", "Jane Smith", "jane@acme.com", ...</p>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Upload Issuer Data</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Upload a CSV or Excel file containing issuer information.</p>
+                    
+                    <div class="alert alert-info">
+                        <h5>File Format Requirements</h5>
+                        <p>Please ensure your file follows these guidelines:</p>
+                        <ul>
+                            <li><strong>Issuer Name</strong> - Required field for each issuer</li>
+                            <li><strong>Contact Information</strong> - Email addresses for issuer contacts</li>
+                            <li>Additional custom fields will be preserved</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('uploads.upload_issuers') }}" class="mt-4">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Select File</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls" required>
+                            <div class="form-text">Accepted formats: CSV, Excel (.xlsx, .xls)</div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/custodian_dashboard" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Sample Format</h5>
+                </div>
+                <div class="card-body">
+                    <p>Your file should have columns similar to this:</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Issuers</th>
+                                    <th>Contact 1</th>
+                                    <th>Contact 2</th>
+                                    <th>Contact 3</th>
+                                    <th>Custom Field 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Issuer Company Name</td>
+                                    <td>contact1@example.com</td>
+                                    <td>contact2@example.com</td>
+                                    <td>contact3@example.com</td>
+                                    <td>Custom value</td>
+                                </tr>
+                                <tr>
+                                    <td>Another Issuer</td>
+                                    <td>info@anotherissuer.com</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Another value</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-muted mt-3">
+                        <small>Note: You'll be able to map your columns to the required fields after uploading.</small>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_issuers') }}">
-        <div class="form-group">
-            <label for="file">Select File</label>
-            <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Upload</button>
-    </form>
-</div> 
+</div>
+{% endblock %} 
