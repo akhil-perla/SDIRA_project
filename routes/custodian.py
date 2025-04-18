@@ -8,45 +8,27 @@ FILES_JSON_PATH = "storage/files.json"
 USER_FILE = "storage/users.json"
 
 @custodian_bp.route('/dashboard')
-def custodian_dashboard():
+def dashboard():
     if 'user' not in session or session.get('role') != 'custodian':
-        flash("Unauthorized access.", "danger")
-        return redirect(url_for("auth.login"))
+        flash('You must be logged in as a custodian to view this page.', 'danger')
+        return redirect(url_for('auth.login'))
 
-    custodian = session['user']
+    username = session['user']
     
-    # Load associated issuers
-    issuers = []
-    users = {}
-    if os.path.exists(USER_FILE):
-        with open(USER_FILE, "r") as f:
-            try:
-                users = json.load(f)
-                issuers = users.get(custodian, {}).get("manages", [])
-            except json.JSONDecodeError:
-                flash("Failed to load user data", "danger")
+    # Load issuers data
+    with open('storage/issuers.json', 'r') as f:
+        issuers_data = json.load(f)
     
-    # Load metadata and filter relevant files
-    files = []
-    if os.path.exists(FILES_JSON_PATH):
-        with open(FILES_JSON_PATH, "r") as f:
-            try:
-                all_files = json.load(f)
-                for file in all_files:
-                    if (
-                        file.get("issuer") in issuers and
-                        custodian in file.get("custodians", [])
-                    ):
-                        files.append(file)
-            except json.JSONDecodeError:
-                flash("Failed to load file metadata", "danger")
+    # Filter issuers for this custodian
+    associated_issuers = []
+    for issuer_name, issuer_info in issuers_data.items():
+        if issuer_info.get('custodian') == username:
+            associated_issuers.append(issuer_name)
 
-    return render_template(
-    "custodian_dashboard.html",
-    custodian=custodian,
-    files=files,
-    issuers=issuers
-    )
+    return render_template('custodian_dashboard.html', 
+                         username=username,
+                         custodian=username,
+                         issuers=associated_issuers)
 
 
 @custodian_bp.route('/add_issuer', methods=['POST'])
@@ -60,13 +42,13 @@ def add_issuer():
 
     if not new_issuer:
         flash("Issuer username is required.", "warning")
-        return redirect(url_for("custodian.custodian_dashboard"))
+        return redirect(url_for("custodian.dashboard"))
 
     # Load users
     USER_FILE = "storage/users.json"
     if not os.path.exists(USER_FILE):
         flash("User database not found.", "danger")
-        return redirect(url_for("custodian.custodian_dashboard"))
+        return redirect(url_for("custodian.dashboard"))
 
     with open(USER_FILE, "r") as f:
         users = json.load(f)
@@ -74,7 +56,7 @@ def add_issuer():
     # Validate issuer
     if new_issuer not in users or users[new_issuer].get("role") != "issuer":
         flash("Invalid issuer username.", "danger")
-        return redirect(url_for("custodian.custodian_dashboard"))
+        return redirect(url_for("custodian.dashboard"))
 
     # Add issuer to custodian's 'manages' list
     manages = users[custodian].get("manages", [])
@@ -87,5 +69,5 @@ def add_issuer():
             json.dump(users, f, indent=4)
         flash(f"Issuer '{new_issuer}' added successfully!", "success")
 
-    return redirect(url_for("custodian.custodian_dashboard"))
+    return redirect(url_for("custodian.dashboard"))
 

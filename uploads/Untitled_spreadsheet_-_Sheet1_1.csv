@@ -1,0 +1,3 @@
+security_id,ISIN,issuer,description,currency,maturity_date
+SEC001,US1234567890,Issuer Company Name,Corporate Bond Series A,USD,2025-12-31
+SEC002,GB0987654321,Another Issuer,5-Year Note,GBP,2026-06-30

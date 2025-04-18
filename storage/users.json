@@ -81,7 +81,9 @@
         "role": "custodian",
         "manages": [
             "ArinK",
-            "testing12"
+            "testing12",
+            "iss1",
+            "issuer_user"
         ]
     }
 }

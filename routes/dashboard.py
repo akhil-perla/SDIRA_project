@@ -48,84 +48,38 @@ def file_exists(filename):
 
 @dashboard_bp.route('/', methods=['GET', 'POST'])
 def dashboard():
-    if 'user' not in session or session.get('role') != 'issuer':
-        flash('You must be logged in as an issuer to view this page.', 'danger')
+    if 'user' not in session:
+        flash('You must be logged in to view this page.', 'danger')
         return redirect(url_for('auth.login'))
 
-    username = session['user']
-    users = load_users()
+    # Check user role and redirect accordingly
+    if session.get('role') == 'custodian':
+        return redirect(url_for('custodian.dashboard'))  # Redirect to custodian dashboard
+    elif session.get('role') == 'issuer':
+        username = session['user']
+        users = load_users()
 
-    # Handle File Upload (POST)
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash("No file part in request.", "danger")
-            return redirect(url_for('dashboard.dashboard'))
+        # Load issuer files and associated custodians for issuer dashboard
+        files = []
+        if os.path.exists(FILES_JSON_PATH):
+            with open(FILES_JSON_PATH, "r") as f:
+                try:
+                    all_files = json.load(f)
+                    files = [f for f in all_files if f.get("issuer") == username]
+                except json.JSONDecodeError:
+                    files = []
 
-        file = request.files['file']
-        if file.filename == "":
-            flash("No file selected.", "warning")
-            return redirect(url_for('dashboard.dashboard'))
+        associated_custodians = users.get(username, {}).get("manages", [])
 
-        if not allowed_file(file.filename):
-            flash("Invalid file type. Allowed: .csv, .xlsx, .xls", "danger")
-            return redirect(url_for('dashboard.dashboard'))
-
-        filename = secure_filename(file.filename)
-        if file_exists(filename):
-            flash("File with this name already exists.", "warning")
-            return redirect(url_for('dashboard.dashboard'))
-
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-
-        # Get selected custodians from form
-        form_custodians = request.form.getlist("custodians")
-        valid_custodians = users.get(username, {}).get("manages", [])
-
-        # Validate selection
-        invalid_custodians = [c for c in form_custodians if c not in valid_custodians]
-        if invalid_custodians:
-            flash(f"Invalid custodian(s): {', '.join(invalid_custodians)}", "danger")
-            return redirect(url_for('dashboard.dashboard'))
-
-        custodians = form_custodians
-
-        # Build metadata
-        file_metadata = {
-            "filename": filename,
-            "size": os.path.getsize(filepath),
-            "upload_time": datetime.utcnow().isoformat(),
-            "mime_type": get_mime_type(filename),
-            "issuer": username,
-            "custodians": custodians
-        }
-
-        metadata = load_metadata()
-        metadata.append(file_metadata)
-        save_metadata(metadata)
-
-        flash("File uploaded successfully!", "success")
-        return redirect(url_for('dashboard.dashboard'))
-
-    # Load issuer files for dashboard
-    files = []
-    if os.path.exists(FILES_JSON_PATH):
-        with open(FILES_JSON_PATH, "r") as f:
-            try:
-                all_files = json.load(f)
-                files = [f for f in all_files if f.get("issuer") == username]
-            except json.JSONDecodeError:
-                files = []
-
-    # Load manually associated custodians
-    associated_custodians = users.get(username, {}).get("manages", [])
-
-    return render_template(
-        'dashboard.html',
-        username=username,
-        files=files,
-        custodians=associated_custodians
-    )
+        return render_template(
+            'dashboard.html',
+            username=username,
+            files=files,
+            custodians=associated_custodians
+        )
+    else:
+        flash('Invalid user role.', 'danger')
+        return redirect(url_for('auth.login'))
 
 
 

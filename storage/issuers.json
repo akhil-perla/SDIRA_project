@@ -43,5 +43,37 @@
                 "email": "johndoe5@gmail.com"
             }
         ]
+    },
+    "SEC001": {
+        "contacts": []
+    },
+    "SEC002": {
+        "contacts": []
+    },
+    "US1234567890": {
+        "contacts": []
+    },
+    "GB0987654321": {
+        "contacts": []
+    },
+    "SECURITY_ID": {
+        "security_id": "SECURITY_ID",
+        "ISIN": "US1234567890",
+        "currency": "USD",
+        "issuer": "ISSUER_NAME",
+        "description": "Security Description",
+        "custodian": "CUSTODIAN_USERNAME",
+        "issuer_contacts": [
+            {
+                "name": "Contact Name",
+                "email": "contact@email.com"
+            }
+        ],
+        "maturity_date": "2025-12-31",
+        "custom_fields": {
+            "Custom Field 1": "Value 1"
+        },
+        "created_at": "2024-03-14T12:00:00",
+        "updated_at": "2024-03-14T12:00:00"
     }
 }

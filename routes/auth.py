@@ -32,7 +32,7 @@ def login():
 
             # Redirect based on role
             if user_data.get("role") == "custodian":
-                return redirect(url_for("custodian.custodian_dashboard"))
+                return redirect(url_for("custodian.dashboard"))
             else:  # issuer or default
                 return redirect(url_for("dashboard.dashboard"))
         else:

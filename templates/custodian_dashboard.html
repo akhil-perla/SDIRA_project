@@ -9,7 +9,7 @@
 
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1">Custodian Dashboard</span>
+        <a href="{{ url_for('custodian.dashboard') }}" class="navbar-brand mb-0 h1">Custodian Dashboard</a>
         <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light">Logout</a>
     </div>
 </nav>
@@ -55,7 +55,12 @@
         {% if issuers %}
             <ul class="list-group">
                 {% for issuer in issuers %}
-                    <li class="list-group-item">{{ issuer }}</li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ issuer }}
+                        <span class="badge bg-primary rounded-pill">
+                            {{ issuers_data[issuer].contacts|length }} contacts
+                        </span>
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
